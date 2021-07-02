@@ -5,7 +5,7 @@
   tasks:
   - name: set env
     set_fact:
-        begin: 0
+        begin: 10
         end: 20
 
   - block:
@@ -147,7 +147,7 @@
 
     - name: echo
       pause:
-        prompt: "modify /opt/system_studio_2019_update_5_ultimate_edition/silent.cfg' then exec './install.sh -s silent.cfg' and then CR to continue ..."
+        prompt: "modify /opt/system_studio_2019_update_5_ultimate_edition/silent.cfg with 'accept', '/opt/license.lic' and 'license_file', then exec './install.sh -s silent.cfg' (10+minutes) and then CR to continue ..."
         #
         # ACCEPT_EULA=accept
         # ACTIVATION_TYPE=license_file
@@ -169,6 +169,10 @@
 # Phase5 - download DPDK  - Must download DPDK before FlexRAN
 # 
   - block:
+    - name: Remove dir to start fresh 
+      file:
+        path: /opt/dpdk-20.11/
+        state: absent
 
     - name: Extract dpdk*.tgz into /opt/dpdk-20.11/
       ansible.builtin.unarchive:
@@ -196,6 +200,11 @@
 # Download FlexRAN
 #
   - block:
+    - name: Remove dir to start fresh 
+      file:
+        path: /opt/flexran
+        state: absent
+
     - name: Creates directory
       file:
         path: /opt/flexran
